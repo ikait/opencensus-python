@@ -147,13 +147,14 @@ class TestFastAPIMiddleware(unittest.TestCase):
             test_client.get("/error")
 
         mock_span = mock_m1.return_value
-        self.assertEqual(mock_span.add_attribute.call_count, 8)
+        self.assertEqual(mock_span.add_attribute.call_count, 9)
         mock_span.add_attribute.assert_has_calls([
             mock.call("http.host", "testserver"),
             mock.call("http.method", "GET"),
             mock.call("http.path", "/error"),
             mock.call("http.url", "http://testserver/error"),
             mock.call("http.route", "/error"),
+            mock.call("http.status_code", 500),
             mock.call("error.name", "FastAPITestException"),
             mock.call("error.message", "test error"),
             mock.call("stacktrace", ANY)
