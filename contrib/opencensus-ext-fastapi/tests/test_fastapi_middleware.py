@@ -154,10 +154,10 @@ class TestFastAPIMiddleware(unittest.TestCase):
             mock.call("http.path", "/error"),
             mock.call("http.url", "http://testserver/error"),
             mock.call("http.route", "/error"),
-            mock.call("http.status_code", 500),
             mock.call("error.name", "FastAPITestException"),
             mock.call("error.message", "test error"),
-            mock.call("stacktrace", ANY)
+            mock.call("stacktrace", ANY),
+            mock.call("http.status_code", 500)
         ])
         mock_m2.assert_called_once()
         mock_m3.assert_called_once()
