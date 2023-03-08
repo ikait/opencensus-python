@@ -15,14 +15,15 @@
 import sys
 import traceback
 import unittest
-import mock
 from unittest.mock import ANY
 
+import mock
 from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from opencensus.ext.fastapi.fastapi_middleware import FastAPIMiddleware
-from opencensus.trace import span as span_module, print_exporter, samplers
+from opencensus.trace import print_exporter, samplers
+from opencensus.trace import span as span_module
 from opencensus.trace import tracer as tracer_module
 from opencensus.trace.propagation import trace_context_http_header_format
 

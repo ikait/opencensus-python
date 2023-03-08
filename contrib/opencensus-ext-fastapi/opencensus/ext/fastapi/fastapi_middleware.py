@@ -16,6 +16,15 @@ import logging
 import traceback
 from typing import Union
 
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.types import ASGIApp
+
 from opencensus.trace import (
     attributes_helper,
     execution_context,
@@ -24,16 +33,11 @@ from opencensus.trace import (
     samplers,
 )
 from opencensus.trace import span as span_module
-from opencensus.trace.blank_span import BlankSpan
-from opencensus.trace.span import Span
 from opencensus.trace import tracer as tracer_module
 from opencensus.trace import utils
+from opencensus.trace.blank_span import BlankSpan
 from opencensus.trace.propagation import trace_context_http_header_format
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.types import ASGIApp
-from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
+from opencensus.trace.span import Span
 
 HTTP_HOST = attributes_helper.COMMON_ATTRIBUTES["HTTP_HOST"]
 HTTP_METHOD = attributes_helper.COMMON_ATTRIBUTES["HTTP_METHOD"]
