@@ -99,7 +99,10 @@ class FastAPIMiddleware(BaseHTTPMiddleware):
         self.excludelist_hostnames = excludelist_hostnames
         self.sampler = sampler or samplers.AlwaysOnSampler()
         self.exporter = exporter or print_exporter.PrintExporter()
-        self.propagator = propagator or trace_context_http_header_format.TraceContextPropagator()
+        self.propagator = (
+            propagator or
+            trace_context_http_header_format.TraceContextPropagator()
+        )
 
         # pylint: disable=protected-access
         integrations.add_integration(integrations._Integrations.FASTAPI)
@@ -129,13 +132,18 @@ class FastAPIMiddleware(BaseHTTPMiddleware):
     def _after_request(self, span: Union[Span, BlankSpan], response: Response):
         span.add_attribute(HTTP_STATUS_CODE, response.status_code)
 
-    def _handle_exception(self, span: Union[Span, BlankSpan], exception: Exception):
+    def _handle_exception(self,
+                          span: Union[Span, BlankSpan], exception: Exception):
         span.add_attribute(ERROR_NAME, exception.__class__.__name__)
         span.add_attribute(ERROR_MESSAGE, str(exception))
-        span.add_attribute(STACKTRACE, "\n".join(traceback.format_tb(exception.__traceback__)))
+        span.add_attribute(
+            STACKTRACE,
+            "\n".join(traceback.format_tb(exception.__traceback__)))
         span.add_attribute(HTTP_STATUS_CODE, HTTP_500_INTERNAL_SERVER_ERROR)
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
 
         # Do not trace if the url is in the exclude list
         if utils.disable_tracing_url(str(request.url), self.excludelist_paths):

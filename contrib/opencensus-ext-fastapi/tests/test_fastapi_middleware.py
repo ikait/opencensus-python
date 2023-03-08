@@ -69,8 +69,11 @@ class TestFastAPIMiddleware(unittest.TestCase):
         self.assertIsNone(middleware.excludelist_paths)
         self.assertIsNone(middleware.excludelist_hostnames)
         self.assertIsInstance(middleware.sampler, samplers.AlwaysOnSampler)
-        self.assertIsInstance(middleware.exporter, print_exporter.PrintExporter)
-        self.assertIsInstance(middleware.propagator, trace_context_http_header_format.TraceContextPropagator)
+        self.assertIsInstance(middleware.exporter,
+                              print_exporter.PrintExporter)
+        self.assertIsInstance(
+            middleware.propagator,
+            trace_context_http_header_format.TraceContextPropagator)
 
     def test_constructor_explicit(self):
         excludelist_paths = mock.Mock()
@@ -90,7 +93,8 @@ class TestFastAPIMiddleware(unittest.TestCase):
 
         self.assertEqual(middleware.app, app)
         self.assertEqual(middleware.excludelist_paths, excludelist_paths)
-        self.assertEqual(middleware.excludelist_hostnames, excludelist_hostnames)
+        self.assertEqual(
+            middleware.excludelist_hostnames, excludelist_hostnames)
         self.assertEqual(middleware.sampler, sampler)
         self.assertEqual(middleware.exporter, exporter)
         self.assertEqual(middleware.propagator, propagator)
@@ -100,7 +104,8 @@ class TestFastAPIMiddleware(unittest.TestCase):
     @mock.patch.object(tracer_module.Tracer, "start_span")
     def test_request(self, mock_m1, mock_m2, mock_m3):
         app = self.create_app()
-        app.add_middleware(FastAPIMiddleware, sampler=samplers.AlwaysOnSampler())
+        app.add_middleware(
+            FastAPIMiddleware, sampler=samplers.AlwaysOnSampler())
 
         test_client = TestClient(app)
         test_client.get("/wiki/Rabbit")
@@ -128,7 +133,10 @@ class TestFastAPIMiddleware(unittest.TestCase):
     @mock.patch.object(FastAPIMiddleware, "_prepare_tracer")
     def test_request_excludelist(self, mock_m):
         app = self.create_app()
-        app.add_middleware(FastAPIMiddleware, excludelist_paths=["health"], sampler=samplers.AlwaysOnSampler())
+        app.add_middleware(
+            FastAPIMiddleware,
+            excludelist_paths=["health"],
+            sampler=samplers.AlwaysOnSampler())
 
         test_client = TestClient(app)
         test_client.get("/health")
